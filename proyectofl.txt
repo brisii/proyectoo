@@ -1,0 +1,81 @@
+from tkinter import *
+import tkinter
+
+import requests
+
+#05451e0398522c4cfd5e0daa2e1f86f8
+#https://api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+
+def mostrar(clima):
+    try:
+        nombre = clima["name"]
+        desc = clima["weather"][0]["description"]
+        temp = clima["main"]["temp"]
+
+        pres = clima["main"]["pressure"]
+        hum = clima["main"]["humidity"]
+        vie = clima["wind"]["speed"]
+
+        climaC["text"] = nombre
+        descripcion["text"] = desc
+        temperatura["text"] = str(int(temp)) + "°C"
+        presion["text"] = str(int(pres)) + " hpa"
+        humedad["text"] = str(int(hum)) + "%"
+        viento["text"] = str(float(vie)) + " Km/h"
+    except:
+        climaC["text"] = "Intenta de nuevo"
+
+def  climad(nombre):
+    try:
+        API_key = "05451e0398522c4cfd5e0daa2e1f86f8"
+        URL = "https://api.openweathermap.org/data/2.5/weather"
+        parametros = {"APPID" : API_key, "q" : nombre, "units" : "metric", "lang":"es"}
+        response = requests.get(URL, params = parametros)
+        clima = response.json()
+        
+        mostrar(clima)
+
+        print(clima["name"])
+        print(clima["weather"][0]["description"])
+        print(clima["main"]["temp"])
+        
+        print(clima["main"]["pressure"])
+        print(clima["main"]["humidity"])
+        print(clima["wind"]["speed"])
+    except:
+        print("Error")
+
+ventana = Tk()
+ventana.geometry("350x620")
+
+logo = tkinter.PhotoImage(file="img/logo.png")
+lbl = tkinter.Label(ventana, image=logo)
+lbl.pack()
+
+nombreCiudad = Entry(ventana, font = ("Arial", 15, "normal"), justify = "center")
+nombreCiudad.pack(padx=30, pady=30)
+
+buscar = Button(ventana, text="Buscar", font=("Calibri", 15, "normal"), command= lambda: climad(nombreCiudad.get()))
+buscar.pack()
+
+climaC = Label(font=("Calibri", 25, "bold"))
+climaC.pack(padx=20, pady=20)
+
+
+temperatura = Label(font=("Calibri", 35, "bold"))
+temperatura.pack(padx=10, pady=5)
+
+descripcion = Label(font=("Calibri", 20, "bold"))
+descripcion.pack(padx=10, pady=10)
+
+
+presion = Label(font=("Calibri", 15, "normal"))
+presion.pack(padx=10, pady=10)
+
+humedad = Label(font=("Calibri", 15, "normal"))
+humedad.pack(padx=10, pady=10)
+
+viento = Label(font=("Calibri", 15, "normal"))
+viento.pack(padx=10, pady=10)
+
+ventana.mainloop()
